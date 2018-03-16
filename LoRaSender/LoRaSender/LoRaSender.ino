@@ -14,13 +14,19 @@ TinyGPSPlus gps;
 SoftwareSerial ss(RXPin, TXPin);
 
 void setup() {
+  LoRa.setSpreadingFactor(12);
+  LoRa.setSignalBandwidth(125E3);
+  LoRa.setCodingRate4(5);
+  LoRa.setTxPower(20, 1);
+  LoRa.setSyncWord(0x69);
+  LoRa.enableCrc();
   pinMode(9, OUTPUT);
   LoRa.setPins(10,2,4);
-  Serial.begin(115200);
+  Serial.begin(9600);
   ss.begin(GPSBaud);
   Serial.println("LoRa Sender");
 
-  if (!LoRa.begin(915E6)) {
+  if (!LoRa.begin(868E6)) {
     Serial.println("Starting LoRa failed!");
     while (1);
   }

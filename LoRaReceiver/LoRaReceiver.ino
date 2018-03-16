@@ -8,6 +8,10 @@ const char *pass =  "";
 const char *server = "api.thingspeak.com";
 
 void setup() {
+  LoRa.setSpreadingFactor(12);
+  LoRa.setSignalBandwidth(125E3);
+  LoRa.setCodingRate4(5);
+  LoRa.enableCrc();
   Serial.begin(115200);
   while (!Serial);
   LoRa.setPins(15,16,5);
@@ -26,7 +30,7 @@ void setup() {
       
   Serial.println("LoRa Receiver");
   
-  if (!LoRa.begin(915E6)) {
+  if (!LoRa.begin(868E6)) {
     Serial.println("Starting LoRa failed!");
     while (1);
   }
@@ -49,7 +53,9 @@ void loop() {
    {
       String postStr = apiKey;
       postStr +="&field1=";
-      postStr += (String)st;
+      //postStr += (String)st;
+      //postStr += " with RSSI ";
+      postStr += (String)LoRa.packetRssi();
       
       client.print("POST /update HTTP/1.1\n");
       client.print("Host: api.thingspeak.com\n");

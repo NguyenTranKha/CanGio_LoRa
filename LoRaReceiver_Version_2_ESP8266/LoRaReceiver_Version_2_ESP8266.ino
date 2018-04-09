@@ -2,22 +2,21 @@
 #include <LoRa.h>
 void setup() {
   // put your setup code here, to run once:
-  LoRa.setSpreadingFactor(12); 
-  LoRa.setSignalBandwidth(125E3);
-  LoRa.setCodingRate4(5);
-  LoRa.setTxPower(20,1);
-  LoRa.enableCrc();
-  LoRa.setSyncWord(0x69);
-  Serial.begin(9600);
-  while (!Serial);
-  LoRa.setPins(10,2,4);
-  Serial.println("LoRa Receiver");
+
   if (!LoRa.begin(868E6)) {
     Serial.println("Starting LoRa failed!");
     while (1);
   }
+  LoRa.setSpreadingFactor(12); 
+  LoRa.setSignalBandwidth(125E3);
+  LoRa.setCodingRate4(5);
+  LoRa.enableCrc();
+  Serial.begin(9600); 
+  while (!Serial);
+  LoRa.setPins(10,2,4);
+  Serial.println("LoRa Receiver");
 }
-
+  
 void loop() {
   // put your main code here, to run repeatedly:
   String st;

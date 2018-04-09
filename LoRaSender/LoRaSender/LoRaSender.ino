@@ -5,7 +5,7 @@
 
 
 int counter = 0;
-static const int RXPin = A3, TXPin = 3;
+static const int RXPin = A3, TXPin = A2;
 static const uint32_t GPSBaud = 9600;
 char ln[50];
 char lt[50];
@@ -14,11 +14,16 @@ TinyGPSPlus gps;
 SoftwareSerial ss(RXPin, TXPin);
 
 void setup() {
+if (!LoRa.begin(868E6)) {
+    Serial.println("Starting LoRa failed!");
+    while (1);
+  }
+  
   LoRa.setSpreadingFactor(12);
   LoRa.setSignalBandwidth(125E3);
   LoRa.setCodingRate4(5);
-  LoRa.setTxPower(20, 1);
-  LoRa.setSyncWord(0x69);
+  LoRa.setTxPower(20);
+  //LoRa.setSyncWord(0x69);
   LoRa.enableCrc();
   pinMode(9, OUTPUT);
   LoRa.setPins(10,2,4);
@@ -26,10 +31,7 @@ void setup() {
   ss.begin(GPSBaud);
   Serial.println("LoRa Sender");
 
-  if (!LoRa.begin(868E6)) {
-    Serial.println("Starting LoRa failed!");
-    while (1);
-  }
+  
 }
 
 void loop() {
@@ -37,7 +39,8 @@ void loop() {
   dtostrf(gps.location.lat(),9,6,lt);
   dtostrf(gps.location.lng(),11,7,ln);
   st += "ID1: ";
-  st += (String)lt +" "+ (String)ln;
+  st += (String)lt +" "+ (String)ln; 
+  //st += "NguyenTranKha";
   Serial.println(st);
   Serial.print("Sending packet: ");
   Serial.println(counter);
@@ -51,7 +54,7 @@ void loop() {
   digitalWrite(9, LOW);
 
   counter++;
-  smartDelay(1000);
+  smartDelay(3000);
 }
 
 static void smartDelay(unsigned long ms)
